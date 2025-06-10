@@ -12,6 +12,19 @@
             "name": "oussama",
             "database": "jpo_connect",
             "username": "oussama"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "oussama",
+            "database": "scott-allo_jpoconnect",
+            "username": "oussama"
         }
     ]
 }

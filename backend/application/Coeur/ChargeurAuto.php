@@ -1,7 +1,7 @@
 <?php
 /**
  * Classe ChargeurAuto
- * Permet de charger automatiquement les classes de l'application.
+ * Permetre de charger automatiquement les classes de l'application.
  */
 
 spl_autoload_register(function ($classe) {
