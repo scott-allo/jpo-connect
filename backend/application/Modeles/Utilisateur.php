@@ -23,4 +23,17 @@ class Utilisateur {
         $stmt->bindParam(':password', password_hash($password, PASSWORD_DEFAULT));
         return $stmt->execute();
     }
+
+    public function login($email, $password) {
+        $query = "SELECT * FROM " . $this->table . " WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user && password_verify($password, $user['password'])) {
+            unset($user['password']); // Sécurité : on ne retourne pas le hash
+            return $user;
+        }
+        return false;
+    }
 }

@@ -30,4 +30,17 @@ class ControleurUtilisateur {
             echo json_encode(['success' => false, 'message' => 'Champs manquants']);
         }
     }
+
+    public function login($data) {
+        if (isset($data['email']) && isset($data['password'])) {
+            $user = $this->utilisateur->login($data['email'], $data['password']);
+            if ($user) {
+                echo json_encode(['success' => true, 'user' => $user]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Identifiants invalides']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        }
+    }
 }
