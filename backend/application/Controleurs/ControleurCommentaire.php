@@ -23,11 +23,6 @@ class ControleurCommentaire {
         }
     }
 
-    public function getByJPO($id_jpo) {
-        $result = $this->commentaire->getByJPO($id_jpo);
-        echo json_encode($result);
-    }
-
     public function moderer($data) {
         if (isset($data['id_commentaire'], $data['modere'])) {
             $result = $this->commentaire->moderer($data['id_commentaire'], $data['modere']);
@@ -38,6 +33,15 @@ class ControleurCommentaire {
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        }
+    }
+
+    public function getByJPO($id_jpo) {
+        if ($id_jpo) {
+            $result = $this->commentaire->getByJPO($id_jpo);
+            echo json_encode($result);
+        } else {
+            echo json_encode([]);
         }
     }
 }
