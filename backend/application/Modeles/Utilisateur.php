@@ -1,0 +1,26 @@
+<?php
+class Utilisateur {
+    private $conn;
+    private $table = "utilisateur";
+
+    public function __construct($db) {
+        $this->conn = $db;
+    }
+
+    public function getAll() {
+        $query = "SELECT * FROM " . $this->table;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function register($nom, $prenom, $email, $password) {
+        $query = "INSERT INTO " . $this->table . " (nom, prenom, email, password) VALUES (:nom, :prenom, :email, :password)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':prenom', $prenom);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', password_hash($password, PASSWORD_DEFAULT));
+        return $stmt->execute();
+    }
+}
