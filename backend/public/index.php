@@ -1,4 +1,9 @@
 <?php
+// Affichage des erreurs
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // On charge l'autoloader
 require_once __DIR__ . '/../application/Coeur/ChargeurAuto.php';
 require_once __DIR__ . '/../Coeur/Database.php';

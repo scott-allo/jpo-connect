@@ -15,12 +15,15 @@ class Utilisateur {
     }
 
     public function register($nom, $prenom, $email, $password) {
-        $query = "INSERT INTO " . $this->table . " (nom, prenom, email, password) VALUES (:nom, :prenom, :email, :password)";
+        $query = "INSERT INTO " . $this->table . " (nom, prenom, email, mot_de_passe, id_role) VALUES (:nom, :prenom, :email, :mot_de_passe, :id_role)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':nom', $nom);
         $stmt->bindParam(':prenom', $prenom);
         $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', password_hash($password, PASSWORD_DEFAULT));
+        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->bindParam(':mot_de_passe', $hash);
+        $role = 4; // Visiteur par défaut
+        $stmt->bindParam(':id_role', $role);
         return $stmt->execute();
     }
 
@@ -30,8 +33,8 @@ class Utilisateur {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($user && password_verify($password, $user['password'])) {
-            unset($user['password']); // Sécurité : on ne retourne pas le hash
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
+            unset($user['mot_de_passe']);
             return $user;
         }
         return false;
