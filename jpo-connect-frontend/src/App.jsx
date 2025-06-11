@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import MesInscriptions from "./pages/MesInscriptions";
 import { UserProvider, UserContext } from "./contexts/UserContext";
 
 function NavBar() {
@@ -16,6 +17,7 @@ function NavBar() {
       <Link to="/register">S'inscrire</Link>
       {user && (
         <>
+          {" "} | <Link to="/mes-inscriptions">Mes inscriptions</Link>
           {" "} | Connecté en tant que <b>{user.prenom} {user.nom}</b>
           {" "} <button onClick={handleLogout}>Déconnexion</button>
         </>
@@ -33,6 +35,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/mes-inscriptions" element={<MesInscriptions />} />
         </Routes>
       </Router>
     </UserProvider>

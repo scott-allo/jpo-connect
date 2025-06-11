@@ -49,6 +49,17 @@ if ($conn) {
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'commentaires_jpo' && isset($_GET['id_jpo'])) {
         $controleur = new ControleurCommentaire($conn);
         $controleur->getByJPO($_GET['id_jpo']);
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'mes_inscriptions' && isset($_GET['id_utilisateur'])) {
+        $inscription = new \Inscription($conn);
+        $query = "SELECT i.*, j.titre, j.date_debut, j.date_fin, e.nom AS etablissement_nom, e.ville
+                  FROM inscription i
+                  JOIN jpo j ON i.id_jpo = j.id
+                  JOIN etablissement e ON j.id_etablissement = e.id
+                  WHERE i.id_utilisateur = :id_utilisateur";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':id_utilisateur', $_GET['id_utilisateur']);
+        $stmt->execute();
+        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
     } else {
         echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
     }
