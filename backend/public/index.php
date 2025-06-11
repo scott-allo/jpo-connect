@@ -24,6 +24,9 @@ if ($conn) {
         } elseif ($_GET['action'] === 'inscription_jpo') {
             $controleur = new ControleurInscription($conn);
             $controleur->inscrire($data);
+        } elseif ($_GET['action'] === 'desinscription_jpo') {
+            $controleur = new ControleurInscription($conn);
+            $controleur->desinscrire($data);
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'jpo') {
         $controleur = new ControleurJPO($conn);

@@ -21,4 +21,17 @@ class ControleurInscription {
             echo json_encode(['success' => false, 'message' => 'Champs manquants']);
         }
     }
+
+    public function desinscrire($data) {
+        if (isset($data['id_utilisateur'], $data['id_jpo'])) {
+            $result = $this->inscription->desinscrire($data['id_utilisateur'], $data['id_jpo']);
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Désinscription réussie']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la désinscription']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        }
+    }
 }

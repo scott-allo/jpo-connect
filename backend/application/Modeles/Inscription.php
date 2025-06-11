@@ -15,4 +15,12 @@ class Inscription {
         $stmt->bindParam(':nombre_personnes', $nombre_personnes);
         return $stmt->execute();
     }
+
+    public function desinscrire($id_utilisateur, $id_jpo) {
+        $query = "DELETE FROM " . $this->table . " WHERE id_utilisateur = :id_utilisateur AND id_jpo = :id_jpo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_utilisateur', $id_utilisateur);
+        $stmt->bindParam(':id_jpo', $id_jpo);
+        return $stmt->execute();
+    }
 }
