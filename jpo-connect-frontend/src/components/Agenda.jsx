@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import CommentairesJPO from "./CommentairesJPO";
+import React, { useContext, useState, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
+import CommentairesJPO from "./CommentairesJPO";
 
 const Agenda = () => {
   const { user } = useContext(UserContext);
@@ -40,23 +40,34 @@ const Agenda = () => {
   if (loading) return <div>Chargement...</div>;
 
   return (
-    <div>
-      <h2>L'agenda des JPO</h2>
-      {message && <div style={{ color: "green" }}>{message}</div>}
+    <div className="container mt-4">
+      <h2 className="mb-4">L'agenda des JPO</h2>
+      {message && <div className="alert alert-success">{message}</div>}
       {jpos.length === 0 ? (
-        <p>Aucune JPO à venir.</p>
+        <div className="alert alert-info">Aucune JPO à venir.</div>
       ) : (
-        <ul>
+        <ul className="list-group">
           {jpos.map((jpo) => (
-            <li key={jpo.id}>
+            <li key={jpo.id} className="list-group-item mb-3">
               <strong>{jpo.titre}</strong> - {jpo.etablissement_nom} ({jpo.ville})<br />
-              {new Date(jpo.date_debut).toLocaleString()}<br />
-              {jpo.description}
+              <span className="text-muted">{new Date(jpo.date_debut).toLocaleString()}</span><br />
+              <span>{jpo.description}</span>
               <br />
-              <button onClick={() => inscrireAJPO(jpo.id)}>
-                S’inscrire à la JPO
-              </button>
-              <CommentairesJPO idJpo={jpo.id} />
+              {user ? (
+                <button
+                  className="btn btn-primary btn-sm mt-2"
+                  onClick={() => inscrireAJPO(jpo.id)}
+                >
+                  S’inscrire à la JPO
+                </button>
+              ) : (
+                <span className="text-secondary">
+                  Connectez-vous pour vous inscrire
+                </span>
+              )}
+              <div className="mt-3">
+                <CommentairesJPO idJpo={jpo.id} />
+              </div>
             </li>
           ))}
         </ul>

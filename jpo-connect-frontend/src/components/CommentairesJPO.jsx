@@ -60,23 +60,27 @@ const CommentairesJPO = ({ idJpo }) => {
           ))}
         </ul>
       )}
-      <form onSubmit={handleSubmit} style={{ marginTop: "1em" }}>
-        <textarea
-          value={contenu}
-          onChange={(e) => setContenu(e.target.value)}
-          placeholder="Votre commentaire"
-          required
-        />
-        <br />
-        <label>
-          Note :
-          <select value={note} onChange={(e) => setNote(Number(e.target.value))}>
-            {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
-          </select>
-        </label>
-        <br />
-        <button type="submit">Poster un commentaire</button>
-      </form>
+      {user ? (
+        <form onSubmit={handleSubmit} style={{ marginTop: "1em" }}>
+          <textarea
+            value={contenu}
+            onChange={(e) => setContenu(e.target.value)}
+            placeholder="Votre commentaire"
+            required
+          />
+          <br />
+          <label>
+            Note :
+            <select value={note} onChange={(e) => setNote(Number(e.target.value))}>
+              {[1,2,3,4,5].map(n => <option key={n} value={n}>{n}</option>)}
+            </select>
+          </label>
+          <br />
+          <button type="submit">Poster un commentaire</button>
+        </form>
+      ) : (
+        <div style={{ color: "gray" }}>Connectez-vous pour commenter</div>
+      )}
       {message && <div style={{ color: "green" }}>{message}</div>}
     </div>
   );
