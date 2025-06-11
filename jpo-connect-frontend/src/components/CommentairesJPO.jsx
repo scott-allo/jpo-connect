@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const CommentairesJPO = ({ idJpo }) => {
+  const { user } = useContext(UserContext);
   const [commentaires, setCommentaires] = useState([]);
   const [loading, setLoading] = useState(true);
   const [contenu, setContenu] = useState("");
@@ -8,7 +10,7 @@ const CommentairesJPO = ({ idJpo }) => {
   const [message, setMessage] = useState("");
 
   // À remplacer par l'ID utilisateur connecté (exemple statique ici)
-  const idUtilisateur = 1;
+  const idUtilisateur = user?.id;
 
   useEffect(() => {
     fetch(`http://localhost/jpo-connect/backend/public/index.php?action=commentaires_jpo&id_jpo=${idJpo}`)

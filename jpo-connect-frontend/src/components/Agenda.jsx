@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CommentairesJPO from "./CommentairesJPO";
+import { UserContext } from "../contexts/UserContext";
 
 const Agenda = () => {
+  const { user } = useContext(UserContext);
   const [jpos, setJpos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  // À remplacer par l'ID utilisateur connecté (exemple statique ici)
-  const idUtilisateur = 1;
+  const idUtilisateur = user?.id;
 
   const inscrireAJPO = (idJpo) => {
     fetch("http://localhost/jpo-connect/backend/public/index.php?action=inscription_jpo", {
@@ -28,6 +29,10 @@ const Agenda = () => {
       .then((res) => res.json())
       .then((data) => {
         setJpos(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setMessage("Erreur de chargement des JPO");
         setLoading(false);
       });
   }, []);
