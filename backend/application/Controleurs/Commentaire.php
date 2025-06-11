@@ -27,4 +27,17 @@ class ControleurCommentaire {
         $result = $this->commentaire->getByJPO($id_jpo);
         echo json_encode($result);
     }
+
+    public function moderer($data) {
+        if (isset($data['id_commentaire'], $data['modere'])) {
+            $result = $this->commentaire->moderer($data['id_commentaire'], $data['modere']);
+            if ($result) {
+                echo json_encode(['success' => true, 'message' => 'Commentaire modéré']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors de la modération']);
+            }
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        }
+    }
 }

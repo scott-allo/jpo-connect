@@ -30,4 +30,12 @@ class Commentaire {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function moderer($id_commentaire, $modere = 1) {
+        $query = "UPDATE " . $this->table . " SET modere = :modere WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':modere', $modere);
+        $stmt->bindParam(':id', $id_commentaire);
+        return $stmt->execute();
+    }
 }

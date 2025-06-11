@@ -31,6 +31,9 @@ if ($conn) {
         } elseif ($_GET['action'] === 'ajouter_commentaire') {
             $controleur = new ControleurCommentaire($conn);
             $controleur->ajouter($data);
+        } elseif ($_GET['action'] === 'moderer_commentaire') {
+            $controleur = new ControleurCommentaire($conn);
+            $controleur->moderer($data);
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'jpo') {
         $controleur = new ControleurJPO($conn);
