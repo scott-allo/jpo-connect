@@ -6,6 +6,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(null); // Ajouté
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -16,6 +17,7 @@ const LoginForm = () => {
     })
       .then((res) => res.json())
       .then((data) => {
+        setSuccess(data.success); // Ajouté
         if (data.success) {
           setUser(data.user);
           setMessage("Connexion réussie !");
@@ -43,7 +45,7 @@ const LoginForm = () => {
         required
       /><br />
       <button type="submit">Se connecter</button>
-      {message && <div style={{ color: data?.success ? "green" : "red" }}>{message}</div>}
+      {message && <div style={{ color: success ? "green" : "red" }}>{message}</div>}
     </form>
   );
 };
