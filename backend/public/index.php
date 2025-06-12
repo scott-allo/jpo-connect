@@ -42,6 +42,24 @@ if ($conn) {
         } elseif ($_GET['action'] === 'moderer_commentaire') {
             $controleur = new ControleurCommentaire($conn);
             $controleur->moderer($data);
+        } elseif ($_GET['action'] === 'ajouter_jpo') {
+            $controleur = new ControleurJPO($conn);
+            $controleur->ajouter($data);
+        } elseif ($_GET['action'] === 'modifier_jpo') {
+            $controleur = new ControleurJPO($conn);
+            $controleur->modifier($data);
+        } elseif ($_GET['action'] === 'supprimer_jpo') {
+            $controleur = new ControleurJPO($conn);
+            $controleur->supprimer($data);
+        } elseif ($_GET['action'] === 'liste_inscrits') {
+            $controleur = new ControleurInscription($conn);
+            $controleur->getInscrits($data);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'supprimer_commentaire') {
+            $controleur = new ControleurCommentaire($conn);
+            $controleur->supprimer($data);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'modifier_inscription') {
+            $controleur = new ControleurInscription($conn);
+            $controleur->update($data);
         }
     } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'jpo') {
         $controleur = new ControleurJPO($conn);
@@ -60,6 +78,15 @@ if ($conn) {
         $stmt->bindParam(':id_utilisateur', $_GET['id_utilisateur']);
         $stmt->execute();
         echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'etablissements') {
+        $stmt = $conn->query("SELECT * FROM etablissement");
+        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'commentaires_non_moderes') {
+        $controleur = new ControleurCommentaire($conn);
+        $controleur->getNonModeres();
+    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'tous_commentaires') {
+        $controleur = new ControleurCommentaire($conn);
+        $controleur->getAll();
     } else {
         echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
     }

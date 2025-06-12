@@ -1,0 +1,20 @@
+Array
+(
+    [0] => admin@laplateforme.io
+    [1] => Array
+        (
+            [id] => 1
+            [email] => admin@laplateforme.io
+            [mot_de_passe] => 1234
+            [nom] => Admin
+            [prenom] => Super
+            [telephone] => 
+            [date_inscription] => 2025-06-10 11:20:02
+            [compte_actif] => 1
+            [id_role] => 1
+            [provider] => 
+            [provider_id] => 
+        )
+
+    [2] => 1234
+)

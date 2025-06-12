@@ -1,8 +1,8 @@
 <?php
 class Database {
+    private $host = 'plesk.students-laplateforme.io';
     private $username = 'scott-allo';
     private $password = 'laplateforme.io';
-    private $host = 'plesk.students-laplateforme.io';
     private $db_name = 'scott-allo_jpoconnect';
     public $conn;
 

@@ -33,7 +33,10 @@ class Utilisateur {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($user && password_verify($password, $user['mot_de_passe'])) {
+        // Debug
+        file_put_contents('login_debug.txt', print_r([$email, $user, $password], true));
+        // Compare en clair
+        if ($user && $password === $user['mot_de_passe']) {
             unset($user['mot_de_passe']);
             return $user;
         }

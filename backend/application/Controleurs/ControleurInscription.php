@@ -34,4 +34,23 @@ class ControleurInscription {
             echo json_encode(['success' => false, 'message' => 'Champs manquants']);
         }
     }
+
+    public function getInscrits($data) {
+        if (isset($data['id_jpo'])) {
+            $result = $this->inscription->getInscritsByJPO($data['id_jpo']);
+            echo json_encode($result);
+        } else {
+            echo json_encode([]);
+        }
+    }
+
+    public function update($data) {
+        if (isset($data['id_utilisateur'], $data['id_jpo'], $data['nombre_personnes'])) {
+            $present = isset($data['present']) ? $data['present'] : null;
+            $result = $this->inscription->update($data['id_utilisateur'], $data['id_jpo'], $data['nombre_personnes'], $present);
+            echo json_encode(['success' => $result, 'message' => $result ? 'Inscription modifiée' : 'Erreur modification']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+        }
+    }
 }
