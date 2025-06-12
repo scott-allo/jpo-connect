@@ -1,7 +1,7 @@
 <?php
 class Utilisateur {
     private $conn;
-    private $table = "utilisateur";
+    private $table = "utilisateur"; // <-- assure-toi que ce champ existe
 
     public function __construct($db) {
         $this->conn = $db;
@@ -29,14 +29,14 @@ class Utilisateur {
     }
 
     public function register($nom, $prenom, $email, $password) {
-        $query = "INSERT INTO " . $this->table . " (nom, prenom, email, mot_de_passe, id_role) VALUES (:nom, :prenom, :email, :mot_de_passe, :id_role)";
-        $stmt = $this->conn->prepare($query);
+        $sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, id_role) VALUES (:nom, :prenom, :email, :mot_de_passe, :id_role)";
+        $stmt = $this->conn->prepare($sql);
         $stmt->bindParam(':nom', $nom);
         $stmt->bindParam(':prenom', $prenom);
         $stmt->bindParam(':email', $email);
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt->bindParam(':mot_de_passe', $hash);
-        $role = 4; // Visiteur par défaut
+        $role = 4;
         $stmt->bindParam(':id_role', $role);
         return $stmt->execute();
     }
@@ -47,10 +47,7 @@ class Utilisateur {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        // Debug
-        file_put_contents('login_debug.txt', print_r([$email, $user, $password], true));
-        // Compare en clair
-        if ($user && $password === $user['mot_de_passe']) {
+        if ($user && password_verify($password, $user['mot_de_passe'])) {
             unset($user['mot_de_passe']);
             return $user;
         }
@@ -67,5 +64,23 @@ class Utilisateur {
         $stmt->bindParam(':id', $id);
         $stmt->bindParam(':id_role', $id_role);
         return $stmt->execute();
+    }
+
+    public function create($nom, $prenom, $email, $password) {
+        $sql = "INSERT INTO utilisateur (nom, prenom, email, mot_de_passe, id_role) VALUES (:nom, :prenom, :email, :password, 4)";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':nom', $nom);
+        $stmt->bindParam(':prenom', $prenom);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        return $stmt->execute();
+    }
+
+    public function getByEmail($email) {
+        $sql = "SELECT * FROM utilisateur WHERE email = :email";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 }

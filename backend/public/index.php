@@ -1,8 +1,18 @@
 <?php
-// Affichage des erreurs
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+header('Content-Type: application/json');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+
+// GESTION DES OPTIONS AVANT TOUT
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit();
+}
 
 // On charge l'autoloader
 require_once __DIR__ . '/../application/Coeur/ChargeurAuto.php';
@@ -11,11 +21,6 @@ require_once __DIR__ . '/../application/Controleurs/ControleurUtilisateur.php';
 require_once __DIR__ . '/../application/Controleurs/ControleurJPO.php';
 require_once __DIR__ . '/../application/Controleurs/ControleurInscription.php';
 require_once __DIR__ . '/../application/Controleurs/ControleurCommentaire.php';
-
-header('Content-Type: application/json');
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 
 $db = new Database();
 $conn = $db->getConnection();
@@ -104,6 +109,25 @@ if ($conn) {
         } elseif ($_GET['action'] === 'tous_commentaires') {
             $controleur = new ControleurCommentaire($conn);
             $controleur->getAll();
+        } elseif ($_GET['action'] === 'recherche_jpo') {
+            $where = [];
+            $params = [];
+            if (!empty($_GET['ville'])) {
+                $where[] = 'e.ville LIKE :ville';
+                $params[':ville'] = '%' . $_GET['ville'] . '%';
+            }
+            if (!empty($_GET['titre'])) {
+                $where[] = 'j.titre LIKE :titre';
+                $params[':titre'] = '%' . $_GET['titre'] . '%';
+            }
+            $sql = "SELECT j.*, e.nom AS etablissement_nom, e.ville
+                    FROM jpo j
+                    JOIN etablissement e ON j.id_etablissement = e.id";
+            if ($where) $sql .= " WHERE " . implode(' AND ', $where);
+            $stmt = $conn->prepare($sql);
+            foreach ($params as $k => $v) $stmt->bindValue($k, $v);
+            $stmt->execute();
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
         } else {
             echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
         }
@@ -112,5 +136,5 @@ if ($conn) {
         echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
     }
 } else {
-    echo json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données']);
+    die(json_encode(['success' => false, 'message' => 'Erreur connexion base de données']));
 }

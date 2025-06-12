@@ -9,46 +9,42 @@ class ControleurUtilisateur {
     }
 
     public function register($data) {
-        if (
-            isset($data['nom']) &&
-            isset($data['prenom']) &&
-            isset($data['email']) &&
-            isset($data['password'])
-        ) {
-            $result = $this->utilisateur->register(
-                $data['nom'],
-                $data['prenom'],
-                $data['email'],
-                $data['password']
-            );
-            if ($result) {
-                echo json_encode(['success' => true, 'message' => 'Inscription réussie']);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'inscription']);
-            }
+        $nom = $data['nom'];
+        $prenom = $data['prenom'];
+        $email = $data['email'];
+        // Accepte les deux pour compatibilité
+        $password = isset($data['password']) ? $data['password'] : $data['mot_de_passe'];
+
+        $user = $this->utilisateur->getByEmail($email);
+        if ($user) {
+            echo json_encode(['success' => false, 'message' => 'Email déjà utilisé']);
+            return;
+        }
+
+        $result = $this->utilisateur->register($nom, $prenom, $email, $password);
+        if ($result) {
+            echo json_encode(['success' => true, 'message' => 'Inscription validée']);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+            echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'inscription']);
         }
     }
 
     public function login($data) {
-        if (isset($data['email']) && isset($data['password'])) {
-            $user = $this->utilisateur->login($data['email'], $data['password']);
-            if ($user) {
-                session_start();
-                $_SESSION['user'] = [
-                    'id' => $user['id'],
-                    'id_role' => $user['id_role'],
-                    'nom' => $user['nom'],
-                    'prenom' => $user['prenom'],
-                    'email' => $user['email']
-                ];
-                echo json_encode(['success' => true, 'user' => $user]);
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Identifiants invalides']);
-            }
+        $email = $data['email'];
+        $password = $data['password']; // et pas 'mot_de_passe'
+        $user = $this->utilisateur->login($email, $password);
+        if ($user) {
+            session_start();
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'id_role' => $user['id_role'],
+                'nom' => $user['nom'],
+                'prenom' => $user['prenom'],
+                'email' => $user['email']
+            ];
+            echo json_encode(['success' => true, 'user' => $_SESSION['user']]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Champs manquants']);
+            echo json_encode(['success' => false, 'message' => 'Identifiants invalides']);
         }
     }
 

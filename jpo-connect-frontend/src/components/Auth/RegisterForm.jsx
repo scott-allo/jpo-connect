@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const RegisterForm = () => {
   const [nom, setNom] = useState("");
@@ -72,6 +73,7 @@ const RegisterForm = () => {
         />
       </div>
       <button type="submit" className="btn btn-primary w-100">S'inscrire</button>
+      <Link to="/register" className="btn btn-link w-100 text-center mt-3">Déjà inscrit ? Connectez-vous</Link>
       {message && (
         <div className={`alert mt-3 ${success ? "alert-success" : "alert-danger"}`}>{message}</div>
       )}

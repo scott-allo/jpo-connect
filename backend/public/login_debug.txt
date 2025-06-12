@@ -1,20 +1,20 @@
 Array
 (
-    [0] => admin@laplateforme.io
+    [0] => Test@gmail.com
     [1] => Array
         (
-            [id] => 1
-            [email] => admin@laplateforme.io
-            [mot_de_passe] => 1234
-            [nom] => Admin
-            [prenom] => Super
+            [id] => 10
+            [email] => Test@gmail.com
+            [mot_de_passe] => $2y$10$2cN2bV0UGZeCBqNkQ66xxuJhWCKS1GyXvnNXE/WsrChHfM4gmoNMa
+            [nom] => Michel
+            [prenom] => Testi
             [telephone] => 
-            [date_inscription] => 2025-06-10 11:20:02
+            [date_inscription] => 2025-06-12 14:29:45
             [compte_actif] => 1
-            [id_role] => 1
+            [id_role] => 4
             [provider] => 
             [provider_id] => 
         )
 
-    [2] => 1234
+    [2] => 123456
 )
