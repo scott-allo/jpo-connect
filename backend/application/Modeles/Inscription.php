@@ -44,4 +44,17 @@ class Inscription {
         $stmt->bindParam(':id_jpo', $id_jpo);
         return $stmt->execute();
     }
+
+    public function getStatsByJPO($id_jpo) {
+        $query = "SELECT 
+        COUNT(*) AS nb_inscrits,
+        SUM(nombre_personnes) AS total_personnes,
+        SUM(CASE WHEN present = 1 THEN nombre_personnes ELSE 0 END) AS nb_presents
+      FROM inscription
+      WHERE id_jpo = :id_jpo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_jpo', $id_jpo);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

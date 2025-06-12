@@ -14,6 +14,12 @@ class ControleurJPO {
     }
 
     public function ajouter($data) {
+        session_start();
+        if (!isset($_SESSION['user']) || $_SESSION['user']['id_role'] > 2) {
+            http_response_code(403);
+            echo json_encode(['success' => false, 'message' => 'Accès interdit']);
+            exit;
+        }
         if (
             isset($data['titre'], $data['description'], $data['date_debut'], $data['date_fin'], $data['capacite_max'], $data['id_etablissement'], $data['createur_id'])
         ) {
@@ -42,5 +48,9 @@ class ControleurJPO {
         } else {
             echo json_encode(['success' => false, 'message' => 'ID manquant']);
         }
+    }
+
+    public function getRoles() {
+        echo json_encode($this->utilisateur->getRoles());
     }
 }

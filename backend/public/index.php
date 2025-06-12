@@ -21,7 +21,7 @@ $db = new Database();
 $conn = $db->getConnection();
 
 if ($conn) {
-    // Ici tu peux gérer tes routes API, par exemple :
+    // POST actions
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action'])) {
         $data = json_decode(file_get_contents('php://input'), true);
         if ($_GET['action'] === 'register') {
@@ -60,34 +60,55 @@ if ($conn) {
         } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'modifier_inscription') {
             $controleur = new ControleurInscription($conn);
             $controleur->update($data);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'stats_jpo') {
+            $controleur = new ControleurInscription($conn);
+            $controleur->getStats($data);
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'changer_role') {
+            $controleur = new ControleurUtilisateur($conn);
+            $controleur->changerRole($data);
         }
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'jpo') {
-        $controleur = new ControleurJPO($conn);
-        $controleur->getAll();
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'commentaires_jpo' && isset($_GET['id_jpo'])) {
-        $controleur = new ControleurCommentaire($conn);
-        $controleur->getByJPO($_GET['id_jpo']);
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'mes_inscriptions' && isset($_GET['id_utilisateur'])) {
-        $inscription = new \Inscription($conn);
-        $query = "SELECT i.*, j.titre, j.date_debut, j.date_fin, e.nom AS etablissement_nom, e.ville
-                  FROM inscription i
-                  JOIN jpo j ON i.id_jpo = j.id
-                  JOIN etablissement e ON j.id_etablissement = e.id
-                  WHERE i.id_utilisateur = :id_utilisateur";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':id_utilisateur', $_GET['id_utilisateur']);
-        $stmt->execute();
-        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'etablissements') {
-        $stmt = $conn->query("SELECT * FROM etablissement");
-        echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'commentaires_non_moderes') {
-        $controleur = new ControleurCommentaire($conn);
-        $controleur->getNonModeres();
-    } elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'tous_commentaires') {
-        $controleur = new ControleurCommentaire($conn);
-        $controleur->getAll();
-    } else {
+    }
+    // GET actions
+    elseif ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action'])) {
+        if ($_GET['action'] === 'utilisateurs') {
+            $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+            $limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
+            $controleur = new ControleurUtilisateur($conn);
+            $controleur->getAll($page, $limit);
+        } elseif ($_GET['action'] === 'roles') {
+            $controleur = new ControleurUtilisateur($conn);
+            $controleur->getRoles();
+        } elseif ($_GET['action'] === 'jpo') {
+            $controleur = new ControleurJPO($conn);
+            $controleur->getAll();
+        } elseif ($_GET['action'] === 'commentaires_jpo' && isset($_GET['id_jpo'])) {
+            $controleur = new ControleurCommentaire($conn);
+            $controleur->getByJPO($_GET['id_jpo']);
+        } elseif ($_GET['action'] === 'mes_inscriptions' && isset($_GET['id_utilisateur'])) {
+            $inscription = new \Inscription($conn);
+            $query = "SELECT i.*, j.titre, j.date_debut, j.date_fin, e.nom AS etablissement_nom, e.ville
+                      FROM inscription i
+                      JOIN jpo j ON i.id_jpo = j.id
+                      JOIN etablissement e ON j.id_etablissement = e.id
+                      WHERE i.id_utilisateur = :id_utilisateur";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(':id_utilisateur', $_GET['id_utilisateur']);
+            $stmt->execute();
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        } elseif ($_GET['action'] === 'etablissements') {
+            $stmt = $conn->query("SELECT * FROM etablissement");
+            echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC));
+        } elseif ($_GET['action'] === 'commentaires_non_moderes') {
+            $controleur = new ControleurCommentaire($conn);
+            $controleur->getNonModeres();
+        } elseif ($_GET['action'] === 'tous_commentaires') {
+            $controleur = new ControleurCommentaire($conn);
+            $controleur->getAll();
+        } else {
+            echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
+        }
+    }
+    else {
         echo json_encode(['success' => true, 'message' => 'API JPO Connect opérationnelle']);
     }
 } else {

@@ -53,4 +53,13 @@ class ControleurInscription {
             echo json_encode(['success' => false, 'message' => 'Champs manquants']);
         }
     }
+
+    public function getStats($data) {
+        if (isset($data['id_jpo'])) {
+            $result = $this->inscription->getStatsByJPO($data['id_jpo']);
+            echo json_encode($result);
+        } else {
+            echo json_encode([]);
+        }
+    }
 }

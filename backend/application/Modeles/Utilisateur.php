@@ -7,11 +7,25 @@ class Utilisateur {
         $this->conn = $db;
     }
 
-    public function getAll() {
-        $query = "SELECT * FROM " . $this->table;
-        $stmt = $this->conn->prepare($query);
+    public function getAll($page = 1, $limit = 10) {
+        $offset = ($page - 1) * $limit;
+        $stmt = $this->conn->prepare(
+            "SELECT u.*, r.nom AS nom_role
+             FROM utilisateur u
+             LEFT JOIN role r ON u.id_role = r.id
+             LIMIT :limit OFFSET :offset"
+        );
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Pour le total
+        $total = $this->conn->query("SELECT COUNT(*) FROM utilisateur")->fetchColumn();
+
+        return [
+            'users' => $stmt->fetchAll(PDO::FETCH_ASSOC),
+            'total' => intval($total)
+        ];
     }
 
     public function register($nom, $prenom, $email, $password) {
@@ -41,5 +55,17 @@ class Utilisateur {
             return $user;
         }
         return false;
+    }
+
+    public function getRoles() {
+        $stmt = $this->conn->query("SELECT * FROM role");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function changerRole($id, $id_role) {
+        $stmt = $this->conn->prepare("UPDATE utilisateur SET id_role = :id_role WHERE id = :id");
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':id_role', $id_role);
+        return $stmt->execute();
     }
 }
