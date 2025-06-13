@@ -38,4 +38,34 @@ class Commentaire {
         $stmt->bindParam(':id', $id_commentaire);
         return $stmt->execute();
     }
+
+    public function getNonModeres() {
+        $query = "SELECT c.*, u.nom, u.prenom, j.titre AS jpo_titre
+                  FROM commentaire c
+                  JOIN utilisateur u ON c.id_utilisateur = u.id
+                  JOIN jpo j ON c.id_jpo = j.id
+                  WHERE c.modere = 0
+                  ORDER BY c.date_creation DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAll() {
+        $query = "SELECT c.*, u.nom, u.prenom, j.titre AS jpo_titre
+                  FROM commentaire c
+                  JOIN utilisateur u ON c.id_utilisateur = u.id
+                  JOIN jpo j ON c.id_jpo = j.id
+                  ORDER BY c.date_creation DESC";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function supprimer($id) {
+        $query = "DELETE FROM " . $this->table . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        return $stmt->execute();
+    }
 }

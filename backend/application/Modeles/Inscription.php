@@ -23,4 +23,38 @@ class Inscription {
         $stmt->bindParam(':id_jpo', $id_jpo);
         return $stmt->execute();
     }
+
+    public function getInscritsByJPO($id_jpo) {
+        $query = "SELECT i.*, u.nom, u.prenom, u.email
+                  FROM inscription i
+                  JOIN utilisateur u ON i.id_utilisateur = u.id
+                  WHERE i.id_jpo = :id_jpo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_jpo', $id_jpo);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id_utilisateur, $id_jpo, $nombre_personnes, $present = null) {
+        $query = "UPDATE " . $this->table . " SET nombre_personnes = :nombre_personnes, present = :present WHERE id_utilisateur = :id_utilisateur AND id_jpo = :id_jpo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':nombre_personnes', $nombre_personnes);
+        $stmt->bindParam(':present', $present);
+        $stmt->bindParam(':id_utilisateur', $id_utilisateur);
+        $stmt->bindParam(':id_jpo', $id_jpo);
+        return $stmt->execute();
+    }
+
+    public function getStatsByJPO($id_jpo) {
+        $query = "SELECT 
+        COUNT(*) AS nb_inscrits,
+        SUM(nombre_personnes) AS total_personnes,
+        SUM(CASE WHEN present = 1 THEN nombre_personnes ELSE 0 END) AS nb_presents
+      FROM inscription
+      WHERE id_jpo = :id_jpo";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_jpo', $id_jpo);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

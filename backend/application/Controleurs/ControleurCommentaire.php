@@ -44,4 +44,23 @@ class ControleurCommentaire {
             echo json_encode([]);
         }
     }
+
+    public function getNonModeres() {
+        $result = $this->commentaire->getNonModeres();
+        echo json_encode($result);
+    }
+
+    public function getAll() {
+        $result = $this->commentaire->getAll();
+        echo json_encode($result);
+    }
+
+    public function supprimer($data) {
+        if (isset($data['id'])) {
+            $result = $this->commentaire->supprimer($data['id']);
+            echo json_encode(['success' => $result, 'message' => $result ? 'Commentaire supprimé' : 'Erreur suppression']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'ID manquant']);
+        }
+    }
 }
