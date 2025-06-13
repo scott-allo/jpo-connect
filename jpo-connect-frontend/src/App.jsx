@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import MesInscriptions from "./pages/MesInscriptions";
 import AdminJPO from "./pages/AdminJPO";
 import { UserProvider, UserContext } from "./contexts/UserContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 function NavBar() {
   const { user, setUser } = useContext(UserContext);
@@ -34,6 +36,7 @@ function App() {
   return (
     <UserProvider>
       <Router>
+        <Header />
         <NavBar />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -42,6 +45,7 @@ function App() {
           <Route path="/mes-inscriptions" element={<MesInscriptions />} />
           <Route path="/admin-jpo" element={<AdminJPO />} />
         </Routes>
+        <Footer />
       </Router>
     </UserProvider>
   );
