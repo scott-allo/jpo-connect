@@ -7,6 +7,7 @@ const Agenda = () => {
   const [jpos, setJpos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [ville, setVille] = useState(""); // Ajouté
 
   const idUtilisateur = user?.id;
 
@@ -37,17 +38,36 @@ const Agenda = () => {
       });
   }, []);
 
+  // Récupère la liste des villes uniques
+  const villes = Array.from(new Set(jpos.map(jpo => jpo.ville)));
+
+  // Filtre les JPO selon la ville sélectionnée
+  const jposFiltres = ville ? jpos.filter(jpo => jpo.ville === ville) : jpos;
+
   if (loading) return <div>Chargement...</div>;
 
   return (
     <div className="container mt-4">
       <h2 className="mb-4">L'agenda des JPO</h2>
+      <div className="mb-3">
+        <label>Filtrer par ville : </label>
+        <select
+          className="form-select w-auto d-inline-block ms-2"
+          value={ville}
+          onChange={e => setVille(e.target.value)}
+        >
+          <option value="">Toutes</option>
+          {villes.map(v => (
+            <option key={v} value={v}>{v}</option>
+          ))}
+        </select>
+      </div>
       {message && <div className="alert alert-success">{message}</div>}
-      {jpos.length === 0 ? (
+      {jposFiltres.length === 0 ? (
         <div className="alert alert-info">Aucune JPO à venir.</div>
       ) : (
         <ul className="list-group">
-          {jpos.map((jpo) => (
+          {jposFiltres.map((jpo) => (
             <li key={jpo.id} className="list-group-item mb-3">
               <strong>{jpo.titre}</strong> - {jpo.etablissement_nom} ({jpo.ville})<br />
               <span className="text-muted">{new Date(jpo.date_debut).toLocaleString()}</span><br />

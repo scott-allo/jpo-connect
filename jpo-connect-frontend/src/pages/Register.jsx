@@ -1,10 +1,6 @@
 import React from "react";
 import RegisterForm from "../components/Auth/RegisterForm";
 
-const Register = () => (
-  <div>
-    <RegisterForm />
-  </div>
-);
+const Register = () => <RegisterForm />;
 
 export default Register;

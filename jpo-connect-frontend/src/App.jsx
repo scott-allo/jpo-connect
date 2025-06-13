@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MesInscriptions from "./pages/MesInscriptions";
+import AdminJPO from "./pages/AdminJPO";
 import { UserProvider, UserContext } from "./contexts/UserContext";
 
 function NavBar() {
@@ -22,6 +23,9 @@ function NavBar() {
           {" "} <button onClick={handleLogout}>Déconnexion</button>
         </>
       )}
+      {user && user.id_role === 1 && (
+        <> | <Link to="/admin-jpo">Admin JPO</Link></>
+      )}
     </nav>
   );
 }
@@ -36,6 +40,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/mes-inscriptions" element={<MesInscriptions />} />
+          <Route path="/admin-jpo" element={<AdminJPO />} />
         </Routes>
       </Router>
     </UserProvider>
@@ -43,3 +48,4 @@ function App() {
 }
 
 export default App;
+
