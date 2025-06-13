@@ -1,3 +1,4 @@
+// ✅ LoginForm.jsx – Complet et corrigé
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../contexts/UserContext";
@@ -7,7 +8,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [success, setSuccess] = useState(null); // Ajouté
+  const [success, setSuccess] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -23,7 +24,7 @@ const LoginForm = () => {
         if (data.success) {
           setUser(data.user);
           setMessage("Connexion réussie !");
-          setTimeout(() => navigate("/"), 1000); // Redirection après 1s
+          setTimeout(() => navigate("/"), 1000);
         } else {
           setMessage(data.message || "Erreur de connexion");
         }
@@ -31,8 +32,8 @@ const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm bg-white" style={{ maxWidth: 400, margin: "2em auto" }}>
-      <h2 className="mb-3">Connexion</h2>
+    <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow max-w-md mx-auto mt-8 border">
+      <h2 className="text-xl font-semibold text-center mb-4">Connexion</h2>
       <div className="mb-3">
         <input
           type="email"
@@ -60,70 +61,3 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
-
-const Agenda = () => {
-  const { user } = useContext(UserContext);
-  const [jpos, setJpos] = useState([]);
-  const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    fetch("http://localhost/jpo-connect/backend/public/index.php?action=getJpos")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setJpos(data.jpos);
-        } else {
-          setMessage("Erreur de chargement des JPO");
-        }
-      });
-  }, []);
-
-  const inscrireAJPO = (idJpo) => {
-    fetch("http://localhost/jpo-connect/backend/public/index.php?action=inscrireAJpo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ idJpo, userId: user.id }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setMessage("Inscription réussie !");
-          setJpos(jpos.map(jpo => jpo.id === idJpo ? { ...jpo, inscrit: true } : jpo));
-        } else {
-          setMessage("Erreur d'inscription");
-        }
-      });
-  };
-
-  return (
-    <div>
-      <h2>L'agenda des JPO</h2>
-      {message && <div style={{ color: "green" }}>{message}</div>}
-      {jpos.length === 0 ? (
-        <p>Aucune JPO à venir.</p>
-      ) : (
-        <ul>
-          {jpos.map((jpo) => (
-            <li key={jpo.id}>
-              <strong>{jpo.titre}</strong> - {jpo.etablissement_nom} ({jpo.ville})<br />
-              {new Date(jpo.date_debut).toLocaleString()}<br />
-              {jpo.description}
-              <br />
-              {user ? (
-                <button onClick={() => inscrireAJPO(jpo.id)}>
-                  S’inscrire à la JPO
-                </button>
-              ) : (
-                <span style={{ color: "gray" }}>
-                  Connectez-vous pour vous inscrire
-                </span>
-              )}
-              <CommentairesJPO idJpo={jpo.id} />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-};
-
