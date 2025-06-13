@@ -1,11 +1,17 @@
 <?php
 require_once __DIR__ . '/../Modeles/Inscription.php';
+require_once __DIR__ . '/../Modeles/Utilisateur.php';
+require_once __DIR__ . '/../Modeles/JourneePortesOuvertes.php';
 
 class ControleurInscription {
     private $inscription;
+    private $utilisateur;
+    private $jpo;
 
     public function __construct($db) {
         $this->inscription = new Inscription($db);
+        $this->utilisateur = new Utilisateur($db);
+        $this->jpo = new JourneePortesOuvertes($db);
     }
 
     public function inscrire($data) {
@@ -13,6 +19,15 @@ class ControleurInscription {
             $nb = isset($data['nombre_personnes']) ? $data['nombre_personnes'] : 1;
             $result = $this->inscription->inscrire($data['id_utilisateur'], $data['id_jpo'], $nb);
             if ($result) {
+                $utilisateur = $this->utilisateur->getById($data['id_utilisateur']);
+                $jpo = $this->jpo->getById($data['id_jpo']);
+                $to = $utilisateur['email'];
+                $subject = "Confirmation d'inscription à la JPO '" . $jpo['titre'] . "'";
+                $message = "Bonjour " . $utilisateur['prenom'] . ",\n\nVous êtes bien inscrit à la JPO : " . $jpo['titre'] . " le " . $jpo['date_debut'] . ".\nVous recevrez un rappel avant l'événement.\n\nMerci !";
+
+                // Envoi simple
+                mail($to, $subject, $message);
+
                 echo json_encode(['success' => true, 'message' => 'Inscription à la JPO réussie']);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Erreur lors de l\'inscription']);
