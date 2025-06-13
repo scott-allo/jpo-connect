@@ -73,6 +73,24 @@ const Agenda = () => {
               <span className="text-muted">{new Date(jpo.date_debut).toLocaleString()}</span><br />
               <span>{jpo.description}</span>
               <br />
+              {/* Section Emplacement */}
+              <section className="mt-3">
+                <h5>Où nous trouver ?</h5>
+                <div style={{ width: "100%", height: "250px", borderRadius: "8px", overflow: "hidden" }}>
+                  <iframe
+                    src={`https://www.google.com/maps?q=${encodeURIComponent(
+                      (jpo.adresse ? jpo.adresse + ", " : "") + jpo.ville
+                    )}&output=embed`}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    title={`Localisation ${jpo.etablissement_nom}`}
+                  ></iframe>
+                </div>
+              </section>
+              {/* Fin Section Emplacement */}
               {user ? (
                 <button
                   className="btn btn-primary btn-sm mt-2"

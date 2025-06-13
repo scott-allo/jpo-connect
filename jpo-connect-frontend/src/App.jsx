@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MesInscriptions from "./pages/MesInscriptions";
 import AdminJPO from "./pages/AdminJPO";
+import Ecoles from "./pages/Ecoles";
 import { UserProvider } from "./contexts/UserContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -21,6 +22,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/mes-inscriptions" element={<MesInscriptions />} />
             <Route path="/admin-jpo" element={<AdminJPO />} />
+            <Route path="/ecoles" element={<Ecoles />} />
           </Routes>
         </main>
         <Footer />
