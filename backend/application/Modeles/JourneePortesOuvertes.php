@@ -52,4 +52,15 @@ class JourneePortesOuvertes {
         $stmt = $this->conn->prepare($query);
         return $stmt->execute([':id' => $id]);
     }
+
+    public function getById($id) {
+        $query = "SELECT jpo.*, etablissement.nom AS etablissement_nom, etablissement.ville 
+                  FROM " . $this->table . "
+                  JOIN etablissement ON jpo.id_etablissement = etablissement.id
+                  WHERE jpo.id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $id);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

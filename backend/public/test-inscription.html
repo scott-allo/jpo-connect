@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test d'inscription</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test d'inscription utilisateur</h1>
+    
+    <form id="inscriptionForm">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="mot_de_passe">Mot de passe:</label>
+            <input type="password" id="mot_de_passe" name="mot_de_passe" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="nom">Nom:</label>
+            <input type="text" id="nom" name="nom" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="prenom">Prénom:</label>
+            <input type="text" id="prenom" name="prenom" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="telephone">Téléphone (optionnel):</label>
+            <input type="tel" id="telephone" name="telephone">
+        </div>
+        <button type="submit">S'inscrire</button>
+    </form>
+    
+    <div id="response" class="response hidden"></div>
+    
+    <script>
+        document.getElementById('inscriptionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const responseDiv = document.getElementById('response');
+            responseDiv.className = 'response hidden';
+            responseDiv.innerHTML = '';
+
+            // Récupérer les données du formulaire
+            const formData = {
+                email: document.getElementById('email').value,
+                mot_de_passe: document.getElementById('mot_de_passe').value,
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                telephone: document.getElementById('telephone').value || null
+            };
+
+            // Envoyer la requête
+            fetch('api/utilisateur.php?action=inscrire', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                responseDiv.classList.remove('hidden');
+                if (data.succes) {
+                    responseDiv.className = 'response success';
+                    responseDiv.innerHTML = '<strong>Succès!</strong> ' + data.message;
+                } else {
+                    responseDiv.className = 'response error';
+                    responseDiv.innerHTML = '<strong>Erreur!</strong> ' + data.message;
+                }
+            })
+            .catch(error => {
+                responseDiv.classList.remove('hidden');
+                responseDiv.className = 'response error';
+                responseDiv.innerHTML = '<strong>Erreur!</strong> Une erreur est survenue lors de la communication avec le serveur.';
+                console.error('Erreur:', error);
+            });
+        });
+    </script>
+</body>
+</html>
