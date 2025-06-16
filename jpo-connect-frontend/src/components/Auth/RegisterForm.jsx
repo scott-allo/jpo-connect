@@ -1,3 +1,4 @@
+// ✅ RegisterForm.jsx – Complet et corrigé
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -30,8 +31,8 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm bg-white" style={{ maxWidth: 400, margin: "2em auto" }}>
-      <h2 className="mb-3">Inscription</h2>
+    <form onSubmit={handleSubmit} className="p-6 bg-white rounded shadow max-w-md mx-auto mt-8 border">
+      <h2 className="text-xl font-semibold text-center mb-4">Inscription</h2>
       <div className="mb-3">
         <input
           type="text"
@@ -73,10 +74,8 @@ const RegisterForm = () => {
         />
       </div>
       <button type="submit" className="btn btn-primary w-100">S'inscrire</button>
-      <Link to="/register" className="btn btn-link w-100 text-center mt-3">Déjà inscrit ? Connectez-vous</Link>
-      {message && (
-        <div className={`alert mt-3 ${success ? "alert-success" : "alert-danger"}`}>{message}</div>
-      )}
+      <Link to="/login" className="btn btn-link w-100 text-center mt-3">Déjà inscrit ? Connectez-vous</Link>
+      {message && <div className={`alert mt-3 ${success ? "alert-success" : "alert-danger"}`}>{message}</div>}
     </form>
   );
 };

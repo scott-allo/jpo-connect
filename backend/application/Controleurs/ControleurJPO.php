@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../Modeles/JourneePortesOuvertes.php';
+require_once __DIR__ . '/../Modeles/Utilisateur.php';
 
 class ControleurJPO {
     private $jpo;
+    private $utilisateur;
 
     public function __construct($db) {
         $this->jpo = new JourneePortesOuvertes($db);
+        $this->utilisateur = new Utilisateur($db);
     }
 
     public function getAll() {
